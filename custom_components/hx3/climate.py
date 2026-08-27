@@ -121,9 +121,6 @@ class Hx3Thermostat(ClimateEntity):
             | ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
         )
 
-        if controller.humidification:
-            self._attr_supported_features |= ClimateEntityFeature.TARGET_HUMIDITY
-
         if not controller._data["fan"]:
             return
 
@@ -184,16 +181,6 @@ class Hx3Thermostat(ClimateEntity):
     def current_humidity(self) -> int | None:
         """Return the current humidity."""
         return self._controller.current_humidity
-
-    @property
-    def min_humidity(self) -> int:
-        # hx3's `humidification` dict is a raw fraction (e.g. 0.3 for 30%),
-        # unlike `current_humidity` which hx3 already converts to a percentage.
-        return round(self._controller.humidification["min"] * 100)
-
-    @property
-    def max_humidity(self) -> int:
-        return round(self._controller.humidification["max"] * 100)
 
     @property
     def hvac_mode(self) -> str:
